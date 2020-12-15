@@ -1,0 +1,6 @@
+address=localhost
+service=5000
+#backup-root="backup-root-path"
+#credentials-file="credentials-file-path"
+#log-file="log-file-path"
+#threads=8

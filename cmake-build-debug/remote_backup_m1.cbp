@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="remote_backup_m1"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\server\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\usr\;CMake Files\..\..\..\..\usr\local\;CMake Files\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\usr\local\lib\cmake\Boost-1.73.0\;CMake Files\..\..\..\..\usr\local\lib\cmake\boost_headers-1.73.0\;CMake Files\..\..\..\..\usr\local\lib\cmake\boost_filesystem-1.73.0\;CMake Files\..\..\..\..\usr\local\lib\cmake\boost_thread-1.73.0\;CMake Files\..\..\..\..\usr\local\lib\cmake\boost_serialization-1.73.0\;CMake Files\..\..\..\..\usr\local\lib\cmake\boost_regex-1.73.0\;CMake Files\..\..\..\..\usr\local\lib\cmake\boost_program_options-1.73.0\;CMake Files\client\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="client">
+				<Option output="/home/leonardo/Desktop/remote-backup-m1/client/client_output/client" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/leonardo/Desktop/remote-backup-m1/client/client_output"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add option="-DBOOST_REGEX_DYN_LINK"/>
+					<Add option="-DBOOST_THREAD_DYN_LINK"/>
+					<Add option="-DBOOST_SERIALIZATION_DYN_LINK"/>
+					<Add option="-DBOOST_PROGRAM_OPTIONS_DYN_LINK"/>
+					<Add directory="/usr/include/c++/8"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/8"/>
+					<Add directory="/usr/include/c++/8/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/8/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/client/client_output/Makefile&quot;  VERBOSE=1 client"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/client/client_output/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/client/client_output/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/client/client_output/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="client/fast">
+				<Option output="/home/leonardo/Desktop/remote-backup-m1/client/client_output/client" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/leonardo/Desktop/remote-backup-m1/client/client_output"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add option="-DBOOST_REGEX_DYN_LINK"/>
+					<Add option="-DBOOST_THREAD_DYN_LINK"/>
+					<Add option="-DBOOST_SERIALIZATION_DYN_LINK"/>
+					<Add option="-DBOOST_PROGRAM_OPTIONS_DYN_LINK"/>
+					<Add directory="/usr/include/c++/8"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/8"/>
+					<Add directory="/usr/include/c++/8/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/8/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/client/client_output/Makefile&quot;  VERBOSE=1 client/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/client/client_output/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/client/client_output/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/client/client_output/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="server">
+				<Option output="/home/leonardo/Desktop/remote-backup-m1/server/server_output/server" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/leonardo/Desktop/remote-backup-m1/server/server_output"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add option="-DBOOST_THREAD_DYN_LINK"/>
+					<Add option="-DBOOST_SERIALIZATION_DYN_LINK"/>
+					<Add option="-DBOOST_REGEX_DYN_LINK"/>
+					<Add option="-DBOOST_PROGRAM_OPTIONS_DYN_LINK"/>
+					<Add directory="/usr/include/c++/8"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/8"/>
+					<Add directory="/usr/include/c++/8/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/8/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/server/server_output/Makefile&quot;  VERBOSE=1 server"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/server/server_output/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/server/server_output/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/server/server_output/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="server/fast">
+				<Option output="/home/leonardo/Desktop/remote-backup-m1/server/server_output/server" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/leonardo/Desktop/remote-backup-m1/server/server_output"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add option="-DBOOST_THREAD_DYN_LINK"/>
+					<Add option="-DBOOST_SERIALIZATION_DYN_LINK"/>
+					<Add option="-DBOOST_REGEX_DYN_LINK"/>
+					<Add option="-DBOOST_PROGRAM_OPTIONS_DYN_LINK"/>
+					<Add directory="/usr/include/c++/8"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/8"/>
+					<Add directory="/usr/include/c++/8/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/8/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/server/server_output/Makefile&quot;  VERBOSE=1 server/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/server/server_output/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/server/server_output/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/leonardo/Desktop/remote-backup-m1/server/server_output/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/communication/f_message.cpp">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/communication/f_message.h">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/core/auth_data.cpp">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/core/auth_data.h">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/core/connection.cpp">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/core/connection.h">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/core/file_watcher.cpp">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/core/file_watcher.h">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/core/scheduler.cpp">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/core/scheduler.h">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/directory/c_resource.cpp">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/directory/c_resource.h">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/main.cpp">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/communication/message_queue.cpp">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/communication/message_queue.h">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/core/connection.cpp">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/core/connection.h">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/core/open_streams.cpp">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/core/open_streams.h">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/core/request_handler.cpp">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/core/request_handler.h">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/core/server.cpp">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/core/server.h">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/core/user.cpp">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/core/user.h">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/directory/s_resource.cpp">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/directory/s_resource.h">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/main.cpp">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/utilities/logger.cpp">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/utilities/logger.h">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/shared/communication/message.cpp">
+			<Option target="client"/>
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/shared/communication/message.h">
+			<Option target="client"/>
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/shared/communication/tlv_view.cpp">
+			<Option target="client"/>
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/shared/communication/tlv_view.h">
+			<Option target="client"/>
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/shared/communication/types.h">
+			<Option target="client"/>
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/shared/directory/dir.h">
+			<Option target="client"/>
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/shared/utilities/tools.cpp">
+			<Option target="client"/>
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/shared/utilities/tools.h">
+			<Option target="client"/>
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\server\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/BoostDetectToolset-1.73.0.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/Boost-1.73.0/BoostConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\Boost-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/Boost-1.73.0/BoostConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\Boost-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_headers-1.73.0/boost_headers-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_headers-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_headers-1.73.0/boost_headers-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_headers-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_filesystem-1.73.0/boost_filesystem-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_filesystem-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_filesystem-1.73.0/boost_filesystem-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_filesystem-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_filesystem-1.73.0/libboost_filesystem-variant-shared.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_filesystem-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_filesystem-1.73.0/libboost_filesystem-variant-static.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_filesystem-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_thread-1.73.0/boost_thread-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_thread-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_thread-1.73.0/boost_thread-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_thread-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_thread-1.73.0/libboost_thread-variant-shared.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_thread-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_thread-1.73.0/libboost_thread-variant-static.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_thread-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_serialization-1.73.0/boost_serialization-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_serialization-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_serialization-1.73.0/boost_serialization-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_serialization-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_serialization-1.73.0/libboost_serialization-variant-shared.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_serialization-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_serialization-1.73.0/libboost_serialization-variant-static.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_serialization-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_regex-1.73.0/boost_regex-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_regex-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_regex-1.73.0/boost_regex-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_regex-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_regex-1.73.0/libboost_regex-variant-shared.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_regex-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_regex-1.73.0/libboost_regex-variant-static.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_regex-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_program_options-1.73.0/boost_program_options-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_program_options-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_program_options-1.73.0/boost_program_options-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_program_options-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_program_options-1.73.0/libboost_program_options-variant-shared.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_program_options-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/../../../../usr/local/lib/cmake/boost_program_options-1.73.0/libboost_program_options-variant-static.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_program_options-1.73.0\"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\client\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

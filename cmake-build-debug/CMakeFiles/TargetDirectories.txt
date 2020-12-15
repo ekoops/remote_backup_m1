@@ -1,0 +1,8 @@
+/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/leonardo/Desktop/remote-backup-m1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/leonardo/Desktop/remote-backup-m1/client/client_output/CMakeFiles/rebuild_cache.dir
+/home/leonardo/Desktop/remote-backup-m1/client/client_output/CMakeFiles/edit_cache.dir
+/home/leonardo/Desktop/remote-backup-m1/client/client_output/CMakeFiles/client.dir
+/home/leonardo/Desktop/remote-backup-m1/server/server_output/CMakeFiles/rebuild_cache.dir
+/home/leonardo/Desktop/remote-backup-m1/server/server_output/CMakeFiles/edit_cache.dir
+/home/leonardo/Desktop/remote-backup-m1/server/server_output/CMakeFiles/server.dir
