@@ -26,12 +26,7 @@ class connection {
     // needed for isolated completion handler execution
     boost::asio::strand<boost::asio::io_context::executor_type> strand_;
     boost::asio::ssl::stream<boost::asio::ip::tcp::socket> socket_;
-    boost::asio::ip::tcp::resolver resolver_;
     boost::asio::ip::tcp::resolver::results_type endpoints_;
-    // prevent io_context object's run() calls from returning when there is no more work to do
-    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> ex_work_guard_;
-    std::vector<std::thread> thread_pool_;
-    std::thread thread_;
     boost::asio::steady_timer keepalive_timer_;
     boost::signals2::signal<void()> handle_reconnection_;
 public:
@@ -66,7 +61,6 @@ public:
 
     void set_reconnection_handler(std::function<void(void)> const &fn);
 
-    void join_thread();
 
 private:
     connection(

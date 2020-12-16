@@ -7,6 +7,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/filesystem.hpp>
 
+
 // Redefinition of hash and equal_to function for boost::filesystem::path
 namespace std {
     template<>
@@ -35,7 +36,7 @@ namespace directory {
         boost::filesystem::path path_;
         std::unordered_map<boost::filesystem::path, R> content_;
         bool concurrent_accessed_;
-        mutable std::recursive_mutex m_;    // we need to acquire lock also in const methods
+        mutable std::mutex m_;    // we need to acquire lock also in const methods
 
     public:
         static std::shared_ptr<dir> get_instance(

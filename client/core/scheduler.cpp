@@ -12,27 +12,15 @@ namespace fs = boost::filesystem;
  * @param io_context io_context
  * @param dir_ptr the watched directory std::shared_ptr
  * @param connection_ptr the connection std::shared_ptr
- * @param thread_pool_size the thread pool size
  * @return a new constructed scheduler instance
  */
 scheduler::scheduler(
         boost::asio::io_context &io,
         std::shared_ptr<directory::dir<directory::c_resource>> dir_ptr,
-        std::shared_ptr<connection> connection_ptr,
-        size_t thread_pool_size
+        std::shared_ptr<connection> connection_ptr
 ) : dir_ptr_{std::move(dir_ptr)},
     connection_ptr_{std::move(connection_ptr)},
-    io_{io},
-    ex_work_guard_{boost::asio::make_work_guard(io_)} {
-    this->thread_pool_.reserve(thread_pool_size);
-
-    for (int i = 0; i < thread_pool_size; i++) {
-        this->thread_pool_.emplace_back(
-                boost::bind(&boost::asio::io_context::run, &this->io_),
-                std::ref(this->io_)
-        );
-    }
-}
+    io_{io} {}
 
 /**
  * Construct a scheduler instance std::shared_ptr for a given watched directory
@@ -41,20 +29,17 @@ scheduler::scheduler(
  * @param io_context io_context
  * @param dir_ptr the watched directory std::shared_ptr
  * @param connection_ptr the connection std::shared_ptr
- * @param thread_pool_size the thread pool size
  * @return a new constructed scheduler instance std::shared_ptr
  */
 std::shared_ptr<scheduler> scheduler::get_instance(
         boost::asio::io_context &io,
         std::shared_ptr<directory::dir<directory::c_resource>> dir_ptr,
-        std::shared_ptr<connection> connection_ptr,
-        size_t thread_pool_size
+        std::shared_ptr<connection> connection_ptr
 ) {
     return std::shared_ptr<scheduler>(new scheduler{
             io,
             std::move(dir_ptr),
-            std::move(connection_ptr),
-            thread_pool_size
+            std::move(connection_ptr)
     });
 }
 
@@ -67,8 +52,8 @@ std::shared_ptr<scheduler> scheduler::get_instance(
  */
 void scheduler::reconnect() {
     this->connection_ptr_->connect();
-    if (this->user_.authenticated()) {
-        if (!this->auth(this->user_) && !this->login()) {
+    if (this->auth_data_.authenticated()) {
+        if (!this->auth(this->auth_data_) && !this->login()) {
             std::exit(EXIT_FAILURE);
         }
         this->sync();
@@ -93,6 +78,7 @@ void scheduler::handle_create(
     directory::c_resource rsrc = rsrc_opt.value();
 
     if (!response) {
+        std::cout << " \u2717 CREATE on " << relative_path.string() << " failed. I'll retry..." << std::endl;
         this->dir_ptr_->insert_or_assign(relative_path, rsrc.synced(false));
         return;
     }
@@ -104,10 +90,12 @@ void scheduler::handle_create(
         sign == std::string{s_view.cbegin(), s_view.cend()} &&
         s_view.next_tlv() &&
         (s_view.tlv_type() == communication::TLV_TYPE::OK ||
-        std::stoi(std::string{s_view.cbegin(), s_view.cend()}) ==
-        communication::ERR_TYPE::ERR_CREATE_ALREADY_EXIST)) {
+         std::stoi(std::string{s_view.cbegin(), s_view.cend()}) ==
+         communication::ERR_TYPE::ERR_CREATE_ALREADY_EXIST)) {
+        std::cout << " \u2713 CREATE on " << relative_path.string() << " done." << std::endl;
         this->dir_ptr_->insert_or_assign(relative_path, rsrc.synced(true).exist_on_server(true));
     } else {
+        std::cout << " \u2717 CREATE on " << relative_path.string() << " failed. I'll retry..." << std::endl;
         this->dir_ptr_->insert_or_assign(relative_path, rsrc.synced(false));
     }
 }
@@ -129,21 +117,29 @@ void scheduler::handle_update(
     if (!rsrc_opt) std::exit(EXIT_FAILURE);
     directory::c_resource rsrc = rsrc_opt.value();
     if (!response) {
+        std::cout << " \u2717 UPDATE on " << relative_path.string() << " failed. I'll retry..." << std::endl;
         this->dir_ptr_->insert_or_assign(relative_path, rsrc.synced(false));
         return;
     }
     communication::message const &response_msg = response.value();
     communication::tlv_view s_view{response_msg};
-    this->dir_ptr_->insert_or_assign(relative_path, rsrc.synced(
-            response_msg.msg_type() == communication::MSG_TYPE::UPDATE &&
-            s_view.next_tlv() &&
-            s_view.tlv_type() == communication::TLV_TYPE::ITEM &&
-            sign == std::string{s_view.cbegin(), s_view.cend()} &&
-            s_view.next_tlv() &&
-            (s_view.tlv_type() == communication::TLV_TYPE::OK ||
-             std::stoi(std::string{s_view.cbegin(), s_view.cend()}) ==
-             communication::ERR_TYPE::ERR_UPDATE_ALREADY_UPDATED)
-    ));
+    auto result = response_msg.msg_type() == communication::MSG_TYPE::UPDATE &&
+                  s_view.next_tlv() &&
+                  s_view.tlv_type() == communication::TLV_TYPE::ITEM &&
+                  sign == std::string{s_view.cbegin(), s_view.cend()} &&
+                  s_view.next_tlv() &&
+                  (s_view.tlv_type() == communication::TLV_TYPE::OK ||
+                   std::stoi(std::string{s_view.cbegin(), s_view.cend()}) ==
+                   communication::ERR_TYPE::ERR_UPDATE_ALREADY_UPDATED);
+    if (result) {
+        std::cout << " \u2713 UPDATE on " << relative_path.string() << " done." << std::endl;
+        this->dir_ptr_->insert_or_assign(relative_path, rsrc.synced(true));
+    }
+    else {
+        std::cout << " \u2717 UPDATE on " << relative_path.string() << " failed. I'll retry..." << std::endl;
+        this->dir_ptr_->insert_or_assign(relative_path, rsrc.synced(false));
+    }
+
 }
 
 /**
@@ -163,6 +159,7 @@ void scheduler::handle_erase(
     if (!rsrc_opt) std::exit(EXIT_FAILURE);
     directory::c_resource rsrc = rsrc_opt.value();
     if (!response) {
+        std::cout << " \u2717 ERASE on " << relative_path.string() << " failed. I'll retry..." << std::endl;
         this->dir_ptr_->insert_or_assign(relative_path, rsrc.synced(false));
         return;
     }
@@ -174,10 +171,11 @@ void scheduler::handle_erase(
         sign == std::string{s_view.cbegin(), s_view.cend()} &&
         s_view.next_tlv() &&
         s_view.tlv_type() == communication::TLV_TYPE::OK) {
-        std::cout << "AAAAAAA4" << relative_path << std::endl;
         this->dir_ptr_->erase(relative_path);
+        std::cout << " \u2713 ERASE on " << relative_path.string() << " done." << std::endl;
     } else {
         this->dir_ptr_->insert_or_assign(relative_path, rsrc.synced(false));
+        std::cout << " \u2717 ERASE on " << relative_path.string() << " failed. I'll retry..." << std::endl;
     }
 }
 
@@ -212,7 +210,7 @@ bool scheduler::login() {
         }
         auth_data usr{username, password};
         if (this->auth(usr)) {
-            this->user_ = usr;
+            this->auth_data_ = usr;
             return true;
         } else {
             this->connection_ptr_->cancel_keepalive();
@@ -261,7 +259,7 @@ bool scheduler::auth(auth_data &usr) {
 void scheduler::sync() {
     communication::message request_msg{communication::MSG_TYPE::SYNC};
     request_msg.add_TLV(communication::TLV_TYPE::END);
-    std::cout << "Scheduling SYNC..." << std::endl;
+    std::cout << " \u25CC Scheduling SYNC..." << std::endl;
 
     auto response = this->connection_ptr_->sync_post(request_msg);
     if (boost::indeterminate(response.first)) {
@@ -311,6 +309,7 @@ void scheduler::sync() {
             this->create(pair.first, pair.second.digest());
         };
     });
+    std::cout << " \u2713 SYNC done." << std::endl;
 }
 
 /**
@@ -329,7 +328,7 @@ void scheduler::create(fs::path const &relative_path, std::string const &digest)
                 digest
         };
         std::ostringstream oss;
-        oss << "Scheduling CREATE for: " << relative_path << ":\n\t" << rsrc;
+        oss << " \u25CC Scheduling CREATE for " << relative_path.string() << "..." << std::endl;
         std::cout << oss.str();
         this->dir_ptr_->insert_or_assign(relative_path, rsrc);
 
@@ -372,7 +371,7 @@ void scheduler::update(fs::path const &relative_path, std::string const &digest)
                 digest
         };
         std::ostringstream oss;
-        oss << "Scheduling UPDATE for: " << relative_path << ":\n\t" << rsrc;
+        oss << " \u25CC Scheduling UPDATE for " << relative_path.string() << "..." << std::endl;
         std::cout << oss.str();
         this->dir_ptr_->insert_or_assign(relative_path, rsrc);
 
@@ -415,7 +414,7 @@ void scheduler::erase(fs::path const &relative_path, std::string const &digest) 
                 digest
         };
         std::ostringstream oss;
-        oss << "Scheduling ERASE for: " << relative_path << ":\n\t" << rsrc;
+        oss << " \u25CC Scheduling ERASE for " << relative_path.string() << "..." << std::endl;
         std::cout << oss.str();
         this->dir_ptr_->insert_or_assign(relative_path, rsrc);
 
@@ -439,11 +438,3 @@ void scheduler::erase(fs::path const &relative_path, std::string const &digest) 
     });
 }
 
-/**
- * Allow to join the scheduler threads.
- *
- * @return void
- */
-void scheduler::join_threads() {
-    for (auto &t : this->thread_pool_) if (t.joinable()) t.join();
-}

@@ -99,10 +99,21 @@ int main(int argc, char const *const argv[]) {
         auto connection_ptr = connection::get_instance(io_context, ctx);
         // Constructing an abstraction for scheduling async task and managing communication
         // with server through the connection
-        auto scheduler_ptr = scheduler::get_instance(io_context, watched_dir_ptr, connection_ptr, thread_pool_size);
+        auto scheduler_ptr = scheduler::get_instance(io_context, watched_dir_ptr, connection_ptr);
         // Constructing an abstraction for monitoring the filesystem and scheduling
         // server synchronizations through bind_scheduler
         file_watcher fw{watched_dir_ptr, scheduler_ptr, std::chrono::milliseconds{delay}};
+
+        // prevent io_context object's run() calls from returning when there is no more work to do
+        auto ex_work_guard_ = boost::asio::make_work_guard(io_context);
+        std::vector<std::thread> thread_pool;
+        thread_pool.reserve(thread_pool_size);
+        for (int i = 0; i < thread_pool_size; i++) {
+            thread_pool.emplace_back(
+                    boost::bind(&boost::asio::io_context::run, &io_context),
+                    std::ref(io_context)
+            );
+        }
 
         connection_ptr->set_reconnection_handler([scheduler_ptr]() {
             scheduler_ptr->reconnect();
@@ -119,8 +130,7 @@ int main(int argc, char const *const argv[]) {
         // Starting specified directory local file watching
         fw.start();
         io_context.stop();
-        scheduler_ptr->join_threads();
-        connection_ptr->join_thread();
+
     }
     catch (fs::filesystem_error &e) {
         std::cerr << "Filesystem error from " << e.what() << std::endl;

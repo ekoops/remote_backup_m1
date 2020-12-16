@@ -53,12 +53,10 @@ void file_watcher::start() {
             directory::c_resource const &rsrc = pair.second;
 
             if (!boost::indeterminate(rsrc.synced())) {
+                // TODO eliminare l'if
                 if (rsrc.exist_on_server()) {
                     this->scheduler_ptr_->erase(relative_path, rsrc.digest());
                 }
-//                else {
-//                    this->dir_ptr_->erase(pair.first);
-//                }
             }
         });
 

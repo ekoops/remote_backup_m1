@@ -21,12 +21,9 @@ namespace ssl = boost::asio::ssl;
 connection::connection(
         boost::asio::io_context &io,
         ssl::context &ctx
-) : ex_work_guard_{boost::asio::make_work_guard(io)},
-    strand_{boost::asio::make_strand(io)},
+) : strand_{boost::asio::make_strand(io)},
     socket_{strand_, ctx},
-    resolver_{strand_},
-    keepalive_timer_{strand_, boost::asio::chrono::seconds{KEEPALIVE_INT_S}},
-    thread_{boost::bind(&boost::asio::io_context::run, &io), std::ref(io)} {
+    keepalive_timer_{strand_, boost::asio::chrono::seconds{KEEPALIVE_INT_S}} {
 
     this->socket_.set_verify_mode(ssl::verify_peer | ssl::verify_fail_if_no_peer_cert);
 }
@@ -96,7 +93,8 @@ void connection::schedule_keepalive() {
  */
 void connection::resolve(std::string const &hostname, std::string const &service) {
     boost::system::error_code ec;
-    this->endpoints_ = this->resolver_.resolve(hostname, service, ec);
+    boost::asio::ip::tcp::resolver res {this->strand_};
+    this->endpoints_ = res.resolve(hostname, service, ec);
     if (ec) {
         std::cerr << "Error in resolve():\n\t" << ec.message() << std::endl;
         std::exit(EXIT_FAILURE);
@@ -226,9 +224,9 @@ boost::logic::tribool connection::write(communication::message const &request_ms
     buffers.emplace_back(boost::asio::buffer(&header, sizeof(header)));
     buffers.emplace_back(request_msg.buffer());
     try {
-        std::cout << "<<<<<<<<<<REQUEST>>>>>>>>>" << std::endl;
-        std::cout << "HEADER: " << header << std::endl;
-        std::cout << request_msg;
+//        std::cout << "<<<<<<<<<<REQUEST>>>>>>>>>" << std::endl;
+//        std::cout << "HEADER: " << header << std::endl;
+//        std::cout << request_msg;
         boost::asio::write(this->socket_, buffers);
         this->schedule_keepalive();
         return true;
@@ -283,10 +281,10 @@ std::pair<boost::logic::tribool, std::optional<communication::message>> connecti
             if (view.verify_end()) ended = true;
         } while (!ended);
         this->schedule_keepalive();
-        communication::message response_msg{raw_msg_ptr};
-        std::cout << "<<<<<<<<<<RESPONSE>>>>>>>>>" << std::endl;
-        std::cout << "HEADER: " << response_msg.size() << std::endl;
-        std::cout << response_msg;
+//        communication::message response_msg{raw_msg_ptr};
+//        std::cout << "<<<<<<<<<<RESPONSE>>>>>>>>>" << std::endl;
+//        std::cout << "HEADER: " << response_msg.size() << std::endl;
+//        std::cout << response_msg;
         return {true, std::make_optional<communication::message>(raw_msg_ptr)};
     }
     catch (boost::system::system_error &ex) {
@@ -314,13 +312,4 @@ std::pair<boost::logic::tribool, std::optional<communication::message>> connecti
  */
 void connection::set_reconnection_handler(std::function<void(void)> const &fn) {
     this->handle_reconnection_.connect(fn);
-}
-
-/**
- * Allow to join the connection thread.
- *
- * @return void
- */
-void connection::join_thread() {
-    if (this->thread_.joinable()) this->thread_.join();
 }

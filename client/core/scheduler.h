@@ -18,17 +18,13 @@ class scheduler {
     std::shared_ptr<connection> connection_ptr_;
     std::shared_ptr<directory::dir<directory::c_resource>> dir_ptr_;
     boost::asio::io_context &io_;
-    // prevent io_context object's run() call from returning when there is no more work to do
-    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> ex_work_guard_;
-    std::vector<std::thread> thread_pool_;
     // user authentication data
-    auth_data user_;
+    auth_data auth_data_;
 
     scheduler(
             boost::asio::io_context &io,
             std::shared_ptr<directory::dir<directory::c_resource>> dir_ptr,
-            std::shared_ptr<connection> connection_ptr,
-            size_t thread_pool_size
+            std::shared_ptr<connection> connection_ptr
     );
 
     void handle_create(
@@ -53,8 +49,7 @@ public:
     static std::shared_ptr<scheduler> get_instance(
             boost::asio::io_context &io,
             std::shared_ptr<directory::dir<directory::c_resource>> dir_ptr,
-            std::shared_ptr<connection> connection_ptr,
-            size_t thread_pool_size
+            std::shared_ptr<connection> connection_ptr
     );
 
     void reconnect();
@@ -71,7 +66,6 @@ public:
 
     void erase(boost::filesystem::path const &relative_path, std::string const &digest);
 
-    void join_threads();
 };
 
 
