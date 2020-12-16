@@ -3,7 +3,7 @@
 using namespace communication;
 namespace fs = boost::filesystem;
 
-size_t const message_queue::CHUNK_SIZE = 4096;
+size_t const message_queue::CHUNK_SIZE = 4096*4;
 
 /**
  * Construct a message_queue instance with a specific message type

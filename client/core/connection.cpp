@@ -1,5 +1,4 @@
 #include <boost/asio/bind_executor.hpp>
-#include <boost/thread.hpp>
 #include <algorithm>
 #include <utility>
 #include "connection.h"

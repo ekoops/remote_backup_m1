@@ -4,7 +4,7 @@
 using namespace communication;
 namespace fs = boost::filesystem;
 
-size_t const f_message::CHUNK_SIZE = 4096;
+size_t const f_message::CHUNK_SIZE = 4096*4;
 
 /**
  * Construct an f_message instance for a specific file.
