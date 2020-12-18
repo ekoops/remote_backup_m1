@@ -1,4 +1,6 @@
 #include "logger.h"
+#include "../../shared/communication/tlv_view.h"
+#include "../../shared/utilities/tools.h"
 
 namespace fs = boost::filesystem;
 using namespace communication;
@@ -18,6 +20,16 @@ logger::logger(fs::path const &path) : ofs_{fs::ofstream{path, std::ios_base::ap
             {SYNC,       "SYNC"},
             {AUTH,       "AUTH"},
             {KEEP_ALIVE, "KEEP_ALIVE"}
+    };
+
+    this->tlv_type_str_map_ = {
+            {USRN,    "USRN"},
+            {PSWD,    "PSWD"},
+            {ITEM,    "ITEM"},
+            {END,     "END"},
+            {OK,      "OK"},
+            {ERROR,   "ERROR"},
+            {CONTENT, "CONTENT"}
     };
 
     this->err_type_str_map_ = {
@@ -45,8 +57,8 @@ logger::logger(fs::path const &path) : ofs_{fs::ofstream{path, std::ios_base::ap
 
     this->conn_res_str_map_ = {
             {CONN_NONE, "-"},
-            {CONN_OK,  "OK"},
-            {CONN_ERR, "ERR"}
+            {CONN_OK,   "OK"},
+            {CONN_ERR,  "ERR"}
     };
 }
 
@@ -66,7 +78,33 @@ void logger::log(user const &usr, std::string const &message) {
     log << '[' << today << "]["
         << username << (username.empty() ? "" : "@") << ip << "]["
         << message << ']' << std::endl;
+
     this->ofs_ << log.str();
+}
+
+void logger::log(user const &usr, communication::message const &message) {
+    std::ostringstream log;
+    auto msg_type_str = this->msg_type_str_map_.find(message.msg_type())->second;
+    log << usr.username() << ":" << msg_type_str << std::endl;
+    communication::tlv_view view{message};
+    while (view.next_tlv()) {
+        auto tlv_type_str = this->tlv_type_str_map_.find(view.tlv_type())->second;
+        log << "\tT: " << tlv_type_str;
+        log << "\tL: " << view.length();
+        if (view.tlv_type() != communication::TLV_TYPE::CONTENT) {
+            std::string str{view.cbegin(), view.cend()};
+            if (view.tlv_type() == communication::ITEM) {
+                str = tools::split_sign(str).first.string();
+            } else if (view.tlv_type() == communication::ERROR) {
+                str = this->err_type_str_map_.find(
+                        static_cast<const ERR_TYPE>(stoi(str))
+                )->second;
+            }
+            log << "\tV: " << str;
+        }
+        log << std::endl;
+    }
+    std::cout << log.str();
 }
 
 /**

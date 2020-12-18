@@ -28,8 +28,8 @@ bool tlv_view::next_tlv() {
     }
     this->tlv_type_ = static_cast<TLV_TYPE>(*this->data_begin_++);
     this->length_ = 0;
-    for (int i = 0; i < 4; i++) {
-        this->length_ += *this->data_begin_++ << 8 * (3 - i);
+    for (int i = 0; i < 2; i++) {
+        this->length_ += *this->data_begin_++ << 8 * (1 - i);
     }
     this->data_end_ = this->data_begin_ + this->length_;
     this->valid_ = true;
@@ -43,7 +43,7 @@ bool tlv_view::next_tlv() {
 */
 bool tlv_view::verify_end() const {
     auto ptr = this->end_-1;
-    for (int i=0; i<4; i++) {
+    for (int i=0; i<2; i++) {
         if (*ptr-- != 0) return false;
     }
     if (*ptr != communication::TLV_TYPE::END) return false;

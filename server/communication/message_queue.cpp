@@ -3,7 +3,7 @@
 using namespace communication;
 namespace fs = boost::filesystem;
 
-size_t const message_queue::CHUNK_SIZE = 4096*4;
+size_t const message_queue::CHUNK_SIZE = 64*1024;
 
 /**
  * Construct a message_queue instance with a specific message type
@@ -34,7 +34,7 @@ message_queue::message_queue(
 void message_queue::add_TLV(TLV_TYPE tlv_type, size_t length, const char *buffer) {
     // there is at least an element so empty check is useless
     auto &last = this->msgs_queue_.back();
-    if (last.size() + 1 + 4 + length <= CHUNK_SIZE) {
+    if (last.size() + 1 + 2 + length <= CHUNK_SIZE) {
         last.add_TLV(tlv_type, length, buffer);
     } else {
         message msg{this->msg_type_};

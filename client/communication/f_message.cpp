@@ -4,7 +4,7 @@
 using namespace communication;
 namespace fs = boost::filesystem;
 
-size_t const f_message::CHUNK_SIZE = 4096*4;
+size_t const f_message::CHUNK_SIZE = 64*1024;
 
 /**
  * Construct an f_message instance for a specific file.
@@ -58,22 +58,22 @@ std::shared_ptr<communication::f_message> f_message::get_instance(
 bool f_message::next_chunk() {
     if (this->completed_) return false;
     size_t to_read;
-    if (this->remaining_ > CHUNK_SIZE - this->header_size_ - 5 - 5) {
-        to_read = CHUNK_SIZE - this->header_size_ - 5;
+    if (this->remaining_ > CHUNK_SIZE - this->header_size_ - 3 - 3) {
+        to_read = CHUNK_SIZE - this->header_size_ - 3;
     } else {
         to_read = this->remaining_;
         this->completed_ = true;
     }
-    for (int i = 0; i < 4; i++) {
-        this->f_content_[i] = (to_read >> (3 - i) * 8) & 0xFF;
+    for (int i = 0; i < 2; i++) {
+        this->f_content_[i] = (to_read >> (1 - i) * 8) & 0xFF;
     }
-    this->ifs_.read(reinterpret_cast<char *>(&*(this->f_content_ + 4)), to_read);
+    this->ifs_.read(reinterpret_cast<char *>(&*(this->f_content_ + 2)), to_read);
     if (!this->ifs_) {
         throw boost::filesystem::filesystem_error::runtime_error{"Unexpected EOF"};
     }
 
     if (this->completed_) {
-        this->resize(this->header_size_ + 5 + this->remaining_);
+        this->resize(this->header_size_ + 3 + this->remaining_);
         this->add_TLV(communication::TLV_TYPE::END);
         this->ifs_.close();
     }

@@ -75,6 +75,9 @@ void connection::log_read() {
  * An helper method to log the result on the write phase
  */
 void connection::log_write(boost::system::error_code const &e) {
+    auto msg_type = this->replies_.msg_type();
+    auto msg_result = this->replies_.err_type();
+
     this->logger_ptr_->log(
             this->user_,
             this->replies_.msg_type(),
@@ -108,8 +111,8 @@ void connection::write_response(boost::system::error_code const &e) {
         return this->shutdown();
     }
     this->header_ = this->replies_.front().size();
-    std::cout << "<<<<<<<<<<<<RESPONSE>>>>>>>>>>>>" << std::endl;
-    std::cout << "HEADER: " << this->header_ << std::endl;
+//    std::cout << "<<<<<<<<<<<<RESPONSE>>>>>>>>>>>>" << std::endl;
+//    std::cout << "HEADER: " << this->header_ << std::endl;
     boost::asio::async_write(
             this->socket_,
             boost::asio::buffer(&this->header_, sizeof(this->header_)),
@@ -121,7 +124,9 @@ void connection::write_response(boost::system::error_code const &e) {
                 }
                 self->msg_ = self->replies_.front();
                 self->replies_.pop();
-                std::cout << self->msg_ << std::endl;
+                std::cout << "TO\t";
+                self->logger_ptr_->log(self->user_, self->msg_);
+
                 boost::asio::async_write(
                         self->socket_,
                         self->msg_.buffer(),
@@ -159,8 +164,10 @@ void connection::handle_request(boost::system::error_code const &e) {
         return this->shutdown();
     }
 
-    std::cout << "<<<<<<<<<<<<REQUEST>>>>>>>>>>>>" << std::endl;
-    std::cout << this->msg_;
+//    std::cout << "<<<<<<<<<<<<REQUEST>>>>>>>>>>>>" << std::endl;
+//    std::cout << this->msg_;
+    std::cout << "FROM\t";
+    this->logger_ptr_->log(this->user_, this->msg_);
 
     this->req_handler_ptr_->handle_request(
             this->msg_,

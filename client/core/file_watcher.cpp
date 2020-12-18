@@ -18,6 +18,7 @@ file_watcher::file_watcher(
         std::shared_ptr<scheduler> scheduler_ptr,
         std::chrono::milliseconds wait_time
 ) : dir_ptr_{std::move(dir_ptr)}, scheduler_ptr_{std::move(scheduler_ptr)}, wait_time_{wait_time} {
+    std::cout << " \u25CC Scanning directory..." << std::endl;
     size_t watched_dir_length = this->dir_ptr_->path().size();
     for (auto &de : fs::recursive_directory_iterator(dir_ptr_->path())) {
         fs::path const &absolute_path = de.path();

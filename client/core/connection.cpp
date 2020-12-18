@@ -277,7 +277,8 @@ std::pair<boost::logic::tribool, std::optional<communication::message>> connecti
             if (first) first = false;
             communication::message temp_msg{raw_msg_ptr};
             communication::tlv_view view{temp_msg};
-            if (view.verify_end()) ended = true;
+            while (view.next_tlv()) if (view.tlv_type() == communication::END) ended = true;
+//            if (view.verify_end()) ended = true;
         } while (!ended);
         this->schedule_keepalive();
 //        communication::message response_msg{raw_msg_ptr};
