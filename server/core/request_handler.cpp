@@ -1,5 +1,6 @@
 #include "request_handler.h"
 #include "../../shared/utilities/tools.h"
+#include "../../shared/communication/f_message.h"
 #include <boost/filesystem.hpp>
 #include <utility>
 #include <boost/algorithm/hex.hpp>
@@ -87,7 +88,7 @@ void request_handler::handle_auth(
  * @param user the client session information
  * @return void
  */
-void request_handler::handle_sync(
+void request_handler::handle_list(
         comm::message_queue &replies,
         user &user
 ) {
@@ -106,7 +107,7 @@ void request_handler::handle_sync(
                         digest
                 })) {
                     user_dir->clear();
-                    return close_response(replies, comm::TLV_TYPE::ERROR, comm::ERR_TYPE::ERR_SYNC_FAILED);
+                    return close_response(replies, comm::TLV_TYPE::ERROR, comm::ERR_TYPE::ERR_LIST_FAILED);
                 }
 
                 std::string sign = tools::create_sign(relative_path, digest);
@@ -119,8 +120,8 @@ void request_handler::handle_sync(
     catch (fs::filesystem_error &ex) {
         std::cout << "Filesystem error:\n\t" << ex.what() << std::endl;
         user_dir->clear();
-        replies = comm::message_queue{comm::MSG_TYPE::SYNC};
-        close_response(replies, comm::TLV_TYPE::ERROR, comm::ERR_TYPE::ERR_SYNC_FAILED);
+        replies = comm::message_queue{comm::MSG_TYPE::LIST};
+        close_response(replies, comm::TLV_TYPE::ERROR, comm::ERR_TYPE::ERR_LIST_FAILED);
     }
 }
 
@@ -366,18 +367,50 @@ void request_handler::handle_erase(
     boost::system::error_code ec;
     // delete the file
     remove(tmp, ec);
-    close_response(
-            replies,
-            !ec && user_dir->erase(c_relative_path)
-            ? comm::TLV_TYPE::OK
-            : comm::TLV_TYPE::ERROR
-    );
-    if (ec) return;
+    if (ec) {
+        close_response(replies, comm::TLV_TYPE::ERROR, comm::ERR_TYPE::ERR_ERASE_FAILED);
+    }
+    else close_response(replies, comm::TLV_TYPE::OK);
     // deleting all empty directories that contained the deleted file
     tmp = tmp.parent_path();
     while (!ec && tmp != user_dir->path() && is_empty(tmp, ec)) {
         remove(tmp, ec);
         tmp = tmp.parent_path();
+    }
+}
+
+void handle_retrieve(
+        comm::tlv_view &msg_view,
+        comm::message_queue &replies,
+        user &user
+) {
+    if (msg_view.tlv_type() != comm::TLV_TYPE::ITEM) {
+        return close_response(replies, comm::TLV_TYPE::ERROR, comm::ERR_TYPE::ERR_ERASE_NO_ITEM);
+    }
+    std::string c_sign{msg_view.cbegin(), msg_view.cend()};
+    auto splitted_c_sign = tools::split_sign(c_sign);
+    fs::path &c_relative_path = splitted_c_sign.first;
+    std::string c_digest = splitted_c_sign.second;
+    auto user_dir = user.dir();
+    auto f_msg = communication::f_message::get_instance(
+            communication::MSG_TYPE::RETRIEVE,
+            user_dir->path() / c_relative_path,
+            c_sign
+    );
+    try {
+        replies = comm::message_queue {communication::MSG_TYPE::NONE};
+        while (f_msg->next_chunk()) {
+            replies.add_message(communication::message{
+                    std::make_shared<std::vector<uint8_t>>(
+                            f_msg->raw_msg_ptr()->cbegin(),
+                            f_msg->raw_msg_ptr()->cend()
+                    )
+            });
+        }
+    }
+    catch (std::exception& ex) {
+        replies = comm::message_queue {communication::MSG_TYPE::RETRIEVE};
+        return close_response(replies, comm::TLV_TYPE::ERROR, comm::ERR_TYPE::ERR_RETRIEVE_FAILED);
     }
 }
 
@@ -407,8 +440,8 @@ void request_handler::handle_request(
         } else return close_response(replies, comm::TLV_TYPE::ERROR, comm::ERR_TYPE::ERR_MSG_TYPE_REJECTED);
     } else {
         if (!user.synced()) {
-            if (c_msg_type == comm::MSG_TYPE::SYNC) {
-                return handle_sync(replies, user);
+            if (c_msg_type == comm::MSG_TYPE::LIST) {
+                return handle_list(replies, user);
             } else return close_response(replies, comm::TLV_TYPE::ERROR, comm::ERR_TYPE::ERR_MSG_TYPE_REJECTED);
         } else {
             if (c_msg_type == comm::MSG_TYPE::CREATE) {
@@ -417,6 +450,8 @@ void request_handler::handle_request(
                 return handle_update(msg_view, replies, user);
             } else if (c_msg_type == comm::MSG_TYPE::ERASE) {
                 return handle_erase(msg_view, replies, user);
+            } else if (c_msg_type == comm::MSG_TYPE::RETRIEVE) {
+                return handle_retrieve(msg_view, replies, user);
             } else if (c_msg_type == comm::MSG_TYPE::KEEP_ALIVE) {
                 return close_response(replies, comm::TLV_TYPE::OK);
             } else return close_response(replies, comm::TLV_TYPE::ERROR, comm::ERR_TYPE::ERR_MSG_TYPE_REJECTED);

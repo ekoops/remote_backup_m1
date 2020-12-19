@@ -154,12 +154,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/communication/f_message.cpp">
-			<Option target="client"/>
-		</Unit>
-		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/communication/f_message.h">
-			<Option target="client"/>
-		</Unit>
 		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/client/core/auth_data.cpp">
 			<Option target="client"/>
 		</Unit>
@@ -242,6 +236,14 @@
 			<Option target="server"/>
 		</Unit>
 		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/server/utilities/logger.h">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/shared/communication/f_message.cpp">
+			<Option target="client"/>
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/shared/communication/f_message.h">
+			<Option target="client"/>
 			<Option target="server"/>
 		</Unit>
 		<Unit filename="/home/leonardo/Desktop/remote-backup-m1/shared/communication/message.cpp">

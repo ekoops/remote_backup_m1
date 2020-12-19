@@ -29,7 +29,10 @@ po::variables_map parse_options(int argc, char const *const argv[]) {
                  "set worker thread pool size")
                 ("delay,D",
                  po::value<size_t>()->default_value(5000),
-                 "set file watcher refresh rate in milliseconds");
+                 "set file watcher refresh rate in milliseconds")
+                ("restore,R",
+                 po::bool_switch()->default_value(false),
+                 "start in restore mode");
 
         po::variables_map vm;
         po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -88,6 +91,7 @@ int main(int argc, char const *const argv[]) {
         std::string service = vm["service"].as<std::string>();
         size_t thread_pool_size = vm["threads"].as<size_t>();
         size_t delay = vm["delay"].as<size_t>();
+        bool restore = vm["restore"].as<bool>();
 
         // Constructing an abstraction for the watched directory
         auto watched_dir_ptr = directory::dir<directory::c_resource>::get_instance(path_to_watch, true);
@@ -104,18 +108,6 @@ int main(int argc, char const *const argv[]) {
             scheduler_ptr->reconnect();
         });
 
-        // prevent io_context object's run() calls from returning when there is no more work to do
-        auto ex_work_guard_ = boost::asio::make_work_guard(io_context);
-        // Constructing a thread pool to serves completion handlers
-        std::vector<std::thread> thread_pool;
-        thread_pool.reserve(thread_pool_size);
-        for (int i = 0; i < thread_pool_size; i++) {
-            thread_pool.emplace_back(
-                    boost::bind(&boost::asio::io_context::run, &io_context),
-                    std::ref(io_context)
-            );
-        }
-
         // Performing server connection
         connection_ptr->resolve(hostname, service);
         connection_ptr->connect();
@@ -125,13 +117,27 @@ int main(int argc, char const *const argv[]) {
             std::exit(EXIT_FAILURE);
         }
 
-        // Constructing an abstraction for monitoring the filesystem and scheduling
-        // server synchronizations through bind_scheduler
-        file_watcher fw{watched_dir_ptr, scheduler_ptr, std::chrono::milliseconds{delay}};
-        // Starting specified directory local file watching
-        fw.start();
-        io_context.stop();
+        if (!restore) {
+            // prevent io_context object's run() calls from returning when there is no more work to do
+            auto ex_work_guard_ = boost::asio::make_work_guard(io_context);
+            // Constructing a thread pool to serves completion handlers
+            std::vector<std::thread> thread_pool;
+            thread_pool.reserve(thread_pool_size);
+            for (int i = 0; i < thread_pool_size; i++) {
+                thread_pool.emplace_back(
+                        boost::bind(&boost::asio::io_context::run, &io_context),
+                        std::ref(io_context)
+                );
+            }
 
+            // Constructing an abstraction for monitoring the filesystem and scheduling
+            // server synchronizations through bind_scheduler
+            file_watcher fw{watched_dir_ptr, scheduler_ptr, std::chrono::milliseconds{delay}};
+            // Starting specified directory local file watching
+            fw.start();
+            io_context.stop();
+            for (auto &t : thread_pool) t.join();
+        } else scheduler_ptr->restore();
     }
     catch (fs::filesystem_error &e) {
         std::cerr << "Filesystem error from " << e.what() << std::endl;

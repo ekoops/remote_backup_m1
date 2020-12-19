@@ -21,6 +21,7 @@ namespace communication {
         explicit message_queue(MSG_TYPE msg_type = NONE);
 
         void add_TLV(TLV_TYPE tlv_type, size_t length = 0, char const *buffer = nullptr);
+        void add_message(message const& msg);
 
         void pop();
         message front();

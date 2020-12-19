@@ -1,7 +1,7 @@
-#ifndef REMOTE_BACKUP_M1_CLIENT_F_MESSAGE_H
-#define REMOTE_BACKUP_M1_CLIENT_F_MESSAGE_H
+#ifndef REMOTE_BACKUP_M1_F_MESSAGE_H
+#define REMOTE_BACKUP_M1_F_MESSAGE_H
 
-#include "../../shared/communication/message.h"
+#include "message.h"
 
 namespace communication {
     /*
@@ -37,4 +37,5 @@ namespace communication {
     };
 }
 
-#endif //REMOTE_BACKUP_M1_CLIENT_F_MESSAGE_H
+
+#endif //REMOTE_BACKUP_M1_F_MESSAGE_H

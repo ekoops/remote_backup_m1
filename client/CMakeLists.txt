@@ -11,6 +11,6 @@ find_package(Boost 1.73.0 REQUIRED COMPONENTS filesystem regex thread serializat
 find_package(OpenSSL REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIR})
-add_executable(client main.cpp core/file_watcher.cpp core/file_watcher.h core/connection.cpp core/connection.h directory/c_resource.cpp directory/c_resource.h core/scheduler.cpp core/scheduler.h communication/f_message.cpp communication/f_message.h core/auth_data.cpp core/auth_data.h ../shared/utilities/tools.cpp ../shared/utilities/tools.h ../shared/directory/dir.h ../shared/communication/message.cpp ../shared/communication/message.h ../shared/communication/types.h ../shared/communication/tlv_view.cpp ../shared/communication/tlv_view.h)
+add_executable(client main.cpp core/file_watcher.cpp core/file_watcher.h core/connection.cpp core/connection.h directory/c_resource.cpp directory/c_resource.h core/scheduler.cpp core/scheduler.h core/auth_data.cpp core/auth_data.h ../shared/utilities/tools.cpp ../shared/utilities/tools.h ../shared/directory/dir.h ../shared/communication/message.cpp ../shared/communication/message.h ../shared/communication/types.h ../shared/communication/tlv_view.cpp ../shared/communication/tlv_view.h ../shared/communication/f_message.cpp ../shared/communication/f_message.h)
 
 target_link_libraries(client ${Boost_LIBRARIES} OpenSSL::SSL OpenSSL::Crypto)

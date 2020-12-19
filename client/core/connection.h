@@ -11,7 +11,7 @@
 #include <boost/asio/ssl.hpp>
 #include <boost/regex.hpp>
 #include <mutex>
-#include "../communication/f_message.h"
+#include "../../shared/communication/f_message.h"
 #include "../../shared/communication/message.h"
 #include "auth_data.h"
 

@@ -11,6 +11,6 @@ find_package(Boost 1.73.0 REQUIRED COMPONENTS filesystem thread serialization re
 find_package(OpenSSL REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIR})
-add_executable(server main.cpp core/server.cpp core/server.h core/connection.cpp core/connection.h core/request_handler.cpp core/request_handler.h directory/s_resource.h directory/s_resource.cpp core/user.cpp core/user.h communication/message_queue.cpp communication/message_queue.h utilities/logger.cpp utilities/logger.h core/open_streams.cpp core/open_streams.h ../shared/utilities/tools.cpp ../shared/utilities/tools.h ../shared/directory/dir.h ../shared/communication/message.cpp ../shared/communication/message.h ../shared/communication/types.h ../shared/communication/tlv_view.cpp ../shared/communication/tlv_view.h)
+add_executable(server main.cpp core/server.cpp core/server.h core/connection.cpp core/connection.h core/request_handler.cpp core/request_handler.h directory/s_resource.h directory/s_resource.cpp core/user.cpp core/user.h communication/message_queue.cpp communication/message_queue.h utilities/logger.cpp utilities/logger.h core/open_streams.cpp core/open_streams.h ../shared/utilities/tools.cpp ../shared/utilities/tools.h ../shared/directory/dir.h ../shared/communication/message.cpp ../shared/communication/message.h ../shared/communication/types.h ../shared/communication/tlv_view.cpp ../shared/communication/tlv_view.h ../shared/communication/f_message.cpp ../shared/communication/f_message.h)
 
 target_link_libraries(server ${Boost_LIBRARIES} OpenSSL::SSL OpenSSL::Crypto)

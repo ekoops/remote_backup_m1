@@ -17,9 +17,10 @@ logger::logger(fs::path const &path) : ofs_{fs::ofstream{path, std::ios_base::ap
             {CREATE,     "CREATE"},
             {UPDATE,     "UPDATE"},
             {ERASE,      "ERASE"},
-            {SYNC,       "SYNC"},
             {AUTH,       "AUTH"},
-            {KEEP_ALIVE, "KEEP_ALIVE"}
+            {KEEP_ALIVE, "KEEP_ALIVE"},
+            {LIST,       "LIST"},
+            {RETRIEVE,   "RETRIEVE"}
     };
 
     this->tlv_type_str_map_ = {
@@ -49,10 +50,12 @@ logger::logger(fs::path const &path) : ofs_{fs::ofstream{path, std::ios_base::ap
             {ERR_UPDATE_NO_MATCH,        "ERR_UPDATE_NO_MATCH"},
             {ERR_ERASE_NO_ITEM,          "ERR_ERASE_NO_ITEM"},
             {ERR_ERASE_NO_MATCH,         "ERR_ERASE_NO_MATCH"},
-            {ERR_SYNC_FAILED,            "ERR_SYNC_FAILED"},
+            {ERR_ERASE_FAILED,           "ERR_ERASE_FAILED"},
+            {ERR_LIST_FAILED,            "ERR_LIST_FAILED"},
             {ERR_AUTH_NO_USRN,           "ERR_AUTH_NO_USRN"},
             {ERR_AUTH_NO_PSWD,           "ERR_AUTH_NO_PSWD"},
-            {ERR_AUTH_FAILED,            "ERR_AUTH_FAILED"}
+            {ERR_AUTH_FAILED,            "ERR_AUTH_FAILED"},
+            {ERR_RETRIEVE_FAILED,        "ERR_RETRIEVE_FAILED"}
     };
 
     this->conn_res_str_map_ = {

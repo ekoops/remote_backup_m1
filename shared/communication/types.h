@@ -13,9 +13,10 @@ namespace communication {
         CREATE = 1,
         UPDATE = 2,
         ERASE = 3,
-        SYNC = 4,
+        LIST = 4,
         AUTH = 5,
-        KEEP_ALIVE = 6
+        RETRIEVE = 6,
+        KEEP_ALIVE = 7
     };
 
     enum TLV_TYPE {
@@ -45,10 +46,12 @@ namespace communication {
         ERR_UPDATE_NO_MATCH = 206,
         ERR_ERASE_NO_ITEM = 301,
         ERR_ERASE_NO_MATCH = 302,
-        ERR_SYNC_FAILED = 401,
+        ERR_ERASE_FAILED = 303,
+        ERR_LIST_FAILED = 401,
         ERR_AUTH_NO_USRN = 501,
         ERR_AUTH_NO_PSWD = 502,
-        ERR_AUTH_FAILED = 503
+        ERR_AUTH_FAILED = 503,
+        ERR_RETRIEVE_FAILED = 601
     };
 
     // communication result for logging

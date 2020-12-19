@@ -16,7 +16,9 @@ message_queue::message_queue(
 ) : msg_type_{msg_type}
 , msgs_queue_{std::queue<message>{}}
 , err_type_ {ERR_TYPE::ERR_NONE} {
-    this->msgs_queue_.emplace(this->msg_type_);
+    if (msg_type != communication::MSG_TYPE::NONE) {
+        this->msgs_queue_.emplace(this->msg_type_);
+    }
 }
 
 /**
@@ -45,6 +47,10 @@ void message_queue::add_TLV(TLV_TYPE tlv_type, size_t length, const char *buffer
         std::string error_str {buffer, length};
         this->err_type_ = static_cast<ERR_TYPE>(std::stoi(error_str));
     }
+}
+
+void message_queue::add_message(message const& msg) {
+    this->msgs_queue_.push(msg);
 }
 
 void message_queue::pop() {

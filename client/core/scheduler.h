@@ -58,6 +58,10 @@ public:
 
     bool auth(auth_data &usr);
 
+    bool retrieve(std::string const& sign);
+
+    void restore();
+
     void sync();
 
     void create(boost::filesystem::path const &relative_path, std::string const &digest);

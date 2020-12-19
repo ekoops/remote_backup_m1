@@ -1,6 +1,6 @@
+#include "../../shared/utilities/tools.h"
 #include <boost/function.hpp>
 #include "scheduler.h"
-#include "../../shared/utilities/tools.h"
 #include "../../shared/communication/tlv_view.h"
 
 namespace fs = boost::filesystem;
@@ -134,8 +134,7 @@ void scheduler::handle_update(
     if (result) {
         std::cout << " \u2713 UPDATE on " << relative_path.string() << " done." << std::endl;
         this->dir_ptr_->insert_or_assign(relative_path, rsrc.synced(true));
-    }
-    else {
+    } else {
         std::cout << " \u2717 UPDATE on " << relative_path.string() << " failed. I'll retry..." << std::endl;
         this->dir_ptr_->insert_or_assign(relative_path, rsrc.synced(false));
     }
@@ -251,13 +250,107 @@ bool scheduler::auth(auth_data &usr) {
 
 }
 
+bool scheduler::retrieve(std::string const &sign) {
+    auto splitted_sign = tools::split_sign(sign);
+    fs::path const &relative_path = splitted_sign.first;
+    std::string const &digest = splitted_sign.second;
+    std::ostringstream oss;
+    oss << " \u25CC Scheduling RETRIEVE for " << relative_path.string() << "..." << std::endl;
+    std::cout << oss.str();
+    communication::message retrieve_request{communication::MSG_TYPE::RETRIEVE};
+    retrieve_request.add_TLV(communication::TLV_TYPE::ITEM, sign.size(), sign.c_str());
+    retrieve_request.add_TLV(communication::TLV_TYPE::END);
+    auto response = this->connection_ptr_->sync_post(retrieve_request);
+    if (boost::indeterminate(response.first) || response.first == false) {
+        std::cout << " \u2717 RETRIEVE on " << relative_path.string() << " failed." << std::endl;
+        return false;
+    }
+    auto response_msg = response.second.value();
+    communication::tlv_view view{response_msg};
+    if (response_msg.msg_type() != communication::MSG_TYPE::RETRIEVE) {
+        std::cout << " \u2717 RETRIEVE on " << relative_path.string() << " failed." << std::endl;
+        return false;
+    }
+    boost::system::error_code ec;
+    fs::path absolute_path = this->dir_ptr_->path() / relative_path;
+    try {
+        fs::create_directories(absolute_path.parent_path());
+        fs::ofstream ofs{absolute_path, std::ios_base::binary};
+        if (!ofs) {
+            std::cout << " \u2717 RETRIEVE on " << relative_path.string() << " failed." << std::endl;
+            return false;
+        }
+
+        while (view.next_tlv() && view.tlv_type() == communication::TLV_TYPE::ITEM &&
+               sign == std::string{view.cbegin(), view.cend()} &&
+               view.next_tlv() && view.tlv_type() == communication::TLV_TYPE::CONTENT) {
+            std::copy(view.cbegin(), view.cend(), std::ostreambuf_iterator<char>(ofs));
+        }
+        if (view.tlv_type() != communication::TLV_TYPE::END) {
+            std::cout << view.tlv_type() << std::endl;
+            std::cout << " \u2717 RETRIEVE on " << relative_path.string() << " failed." << std::endl;
+            return false;
+        }
+        ofs.close();
+        // Comparing server file digest with the sent digest
+        std::string c_digest = tools::MD5_hash(absolute_path, relative_path);
+        if (c_digest != digest) {
+            remove(absolute_path, ec);  // if digests doesn't match, remove created file
+            if (ec) std::exit(EXIT_FAILURE);
+            std::cout << " \u2717 RETRIEVE on " << relative_path.string() << " failed." << std::endl;
+            return false;
+        }
+        std::cout << " \u2713 RETRIEVE on " << relative_path.string() << " done." << std::endl;
+        return true;
+    }
+    catch (fs::filesystem_error &ex) {
+        remove(absolute_path, ec);  // if digests doesn't match, remove created file
+        if (ec) std::exit(EXIT_FAILURE);
+        std::cout << " \u2717 RETRIEVE on " << relative_path.string() << " failed." << std::endl;
+        return false;
+    }
+}
+
+/**
+ * Allow to handle a RESTORE operation.
+ *
+ * @return void
+ */
+void scheduler::restore() {
+    communication::message request_msg{communication::MSG_TYPE::LIST};
+    request_msg.add_TLV(communication::TLV_TYPE::END);
+    std::cout << " \u25CC Scheduling RESTORE..." << std::endl;
+
+    auto response = this->connection_ptr_->sync_post(request_msg);
+    if (boost::indeterminate(response.first) || response.first == false) {
+        std::cout << " \u2717 Failed to obtain server file list." << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
+
+    auto response_msg = response.second.value();
+    communication::tlv_view s_view{response_msg};
+    communication::MSG_TYPE s_msg_type = response_msg.msg_type();
+    if (s_msg_type != communication::MSG_TYPE::LIST ||
+        !s_view.next_tlv() ||
+        s_view.tlv_type() == communication::TLV_TYPE::ERROR) {
+        std::cerr << " \u2717 RESTORE failed." << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
+    do {
+        if (s_view.tlv_type() == communication::TLV_TYPE::ITEM) {
+            this->retrieve(std::string{s_view.cbegin(), s_view.cend()});
+        }
+    } while (s_view.next_tlv());
+    std::cout << " \u2713 RESTORE done." << std::endl;
+}
+
 /**
  * Allow to handle a SYNC operation.
  *
  * @return void
  */
 void scheduler::sync() {
-    communication::message request_msg{communication::MSG_TYPE::SYNC};
+    communication::message request_msg{communication::MSG_TYPE::LIST};
     request_msg.add_TLV(communication::TLV_TYPE::END);
     std::cout << " \u25CC Scheduling SYNC..." << std::endl;
 
@@ -270,7 +363,7 @@ void scheduler::sync() {
 
     communication::tlv_view s_view{response_msg};
     communication::MSG_TYPE s_msg_type = response_msg.msg_type();
-    if (s_msg_type != communication::MSG_TYPE::SYNC ||
+    if (s_msg_type != communication::MSG_TYPE::LIST ||
         !s_view.next_tlv() ||
         s_view.tlv_type() == communication::TLV_TYPE::ERROR) {
         std::cerr << "Failed to sync server state" << std::endl;

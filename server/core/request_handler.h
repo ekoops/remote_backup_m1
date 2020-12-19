@@ -28,7 +28,7 @@ class request_handler : private boost::noncopyable {
                      communication::message_queue &replies,
                      user &user);
 
-    void handle_sync(communication::message_queue &replies,
+    void handle_list(communication::message_queue &replies,
                      user &user);
 
     void handle_create(communication::tlv_view &msg_view,
