@@ -370,7 +370,10 @@ void request_handler::handle_erase(
     if (ec) {
         close_response(replies, comm::TLV_TYPE::ERROR, comm::ERR_TYPE::ERR_ERASE_FAILED);
     }
-    else close_response(replies, comm::TLV_TYPE::OK);
+    else {
+        user_dir->erase(c_relative_path);
+        close_response(replies, comm::TLV_TYPE::OK);
+    }
     // deleting all empty directories that contained the deleted file
     tmp = tmp.parent_path();
     while (!ec && tmp != user_dir->path() && is_empty(tmp, ec)) {
@@ -398,7 +401,7 @@ void handle_retrieve(
             c_sign
     );
     try {
-        replies = comm::message_queue {communication::MSG_TYPE::NONE};
+        replies = comm::message_queue {communication::MSG_TYPE::RETRIEVE};
         while (f_msg->next_chunk()) {
             replies.add_message(communication::message{
                     std::make_shared<std::vector<uint8_t>>(

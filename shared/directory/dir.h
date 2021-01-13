@@ -7,7 +7,6 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/filesystem.hpp>
 
-
 // Redefinition of hash and equal_to function for boost::filesystem::path
 namespace std {
     template<>

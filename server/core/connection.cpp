@@ -75,9 +75,6 @@ void connection::log_read() {
  * An helper method to log the result on the write phase
  */
 void connection::log_write(boost::system::error_code const &e) {
-    auto msg_type = this->replies_.msg_type();
-    auto msg_result = this->replies_.err_type();
-
     this->logger_ptr_->log(
             this->user_,
             this->replies_.msg_type(),

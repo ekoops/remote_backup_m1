@@ -16,7 +16,7 @@ message_queue::message_queue(
 ) : msg_type_{msg_type}
 , msgs_queue_{std::queue<message>{}}
 , err_type_ {ERR_TYPE::ERR_NONE} {
-    if (msg_type != communication::MSG_TYPE::NONE) {
+    if (msg_type != communication::MSG_TYPE::NONE && msg_type != communication::MSG_TYPE::RETRIEVE) {
         this->msgs_queue_.emplace(this->msg_type_);
     }
 }

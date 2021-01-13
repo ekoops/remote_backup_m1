@@ -254,6 +254,22 @@ bool scheduler::retrieve(std::string const &sign) {
     auto splitted_sign = tools::split_sign(sign);
     fs::path const &relative_path = splitted_sign.first;
     std::string const &digest = splitted_sign.second;
+    fs::path absolute_path = this->dir_ptr_->path() / relative_path;
+    if (fs::exists(absolute_path)) {
+        std::string c_digest = tools::MD5_hash(absolute_path, relative_path);
+        if (c_digest == digest) {
+            std::cout << " \u2713 RETRIEVE on " << relative_path.string() << " skipped (already exists)." << std::endl;
+            return true;
+        }
+        else {
+            boost::system::error_code ec;
+            remove(absolute_path, ec);
+            if (ec) {
+                std::cout << " \u2717 RETRIEVE on " << relative_path.string() << " failed." << std::endl;
+                return false;
+            }
+        }
+    }
     std::ostringstream oss;
     oss << " \u25CC Scheduling RETRIEVE for " << relative_path.string() << "..." << std::endl;
     std::cout << oss.str();
@@ -272,7 +288,7 @@ bool scheduler::retrieve(std::string const &sign) {
         return false;
     }
     boost::system::error_code ec;
-    fs::path absolute_path = this->dir_ptr_->path() / relative_path;
+
     try {
         fs::create_directories(absolute_path.parent_path());
         fs::ofstream ofs{absolute_path, std::ios_base::binary};
@@ -287,7 +303,6 @@ bool scheduler::retrieve(std::string const &sign) {
             std::copy(view.cbegin(), view.cend(), std::ostreambuf_iterator<char>(ofs));
         }
         if (view.tlv_type() != communication::TLV_TYPE::END) {
-            std::cout << view.tlv_type() << std::endl;
             std::cout << " \u2717 RETRIEVE on " << relative_path.string() << " failed." << std::endl;
             return false;
         }
@@ -367,7 +382,7 @@ void scheduler::sync() {
         !s_view.next_tlv() ||
         s_view.tlv_type() == communication::TLV_TYPE::ERROR) {
         std::cerr << "Failed to sync server state" << std::endl;
-        std::exit(-1);
+        std::exit(EXIT_FAILURE);
     }
 
     auto s_dir_ptr = directory::dir<directory::c_resource>::get_instance("S_DIR");
